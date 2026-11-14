@@ -1,4 +1,4 @@
--- NexusHub :: BBC Hub Edition (Single File)
+-- NexusHub :: BBC Hub Edition (Single File Corrigido)
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
@@ -24,9 +24,11 @@ end
 local ScreenGui = New("ScreenGui", {Name = "NexusHub", Parent = CoreGui, ResetOnSpawn = false, IgnoreGuiInset = true})
 local UIScale = New("UIScale", {Scale = (UserInputService.TouchEnabled and 0.75) or 1, Parent = ScreenGui})
 
+-- CORREÇÃO: Parent = ScreenGui adicionado aqui
 local Main = New("Frame", {
     Size = UDim2.fromOffset(600, 420), Position = UDim2.new(0.5, -300, 0.5, -210),
-    BackgroundColor3 = Colors.Background, BorderSizePixel = 0, Active = true, Draggable = true
+    BackgroundColor3 = Colors.Background, BorderSizePixel = 0, Active = true, Draggable = true,
+    Parent = ScreenGui 
 }, {
     New("UICorner", {CornerRadius = UDim.new(0, 10)}),
     New("UIStroke", {Color = Colors.Stroke, Thickness = 1}),
