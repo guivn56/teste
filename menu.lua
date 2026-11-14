@@ -24,7 +24,6 @@ end
 local ScreenGui = New("ScreenGui", {Name = "NexusHub", Parent = CoreGui, ResetOnSpawn = false, IgnoreGuiInset = true})
 local UIScale = New("UIScale", {Scale = (UserInputService.TouchEnabled and 0.75) or 1, Parent = ScreenGui})
 
--- CORREÇÃO: Parent = ScreenGui adicionado aqui
 local Main = New("Frame", {
     Size = UDim2.fromOffset(600, 420), Position = UDim2.new(0.5, -300, 0.5, -210),
     BackgroundColor3 = Colors.Background, BorderSizePixel = 0, Active = true, Draggable = true,
@@ -40,24 +39,38 @@ local Main = New("Frame", {
     })
 })
 
--- Top Bar
 New("Frame", {Size = UDim2.new(1, 0, 0, 40), BackgroundColor3 = Colors.Surface, Parent = Main}, {
     New("UICorner", {CornerRadius = UDim.new(0, 10)}),
     New("TextLabel", {Size = UDim2.new(1, -20, 1, 0), Position = UDim2.fromOffset(15, 0), BackgroundTransparency = 1, Text = "Airflow", TextColor3 = Colors.Text, Font = Enum.Font.GothamBold, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left})
 })
 
--- Sidebar
 local Sidebar = New("Frame", {Size = UDim2.new(0, 150, 1, -40), Position = UDim2.fromOffset(0, 40), BackgroundColor3 = Colors.Background, Parent = Main}, {
     New("UIListLayout", {Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder}),
     New("UIPadding", {PaddingTop = UDim.new(0, 10), PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10)})
 })
 
--- Content Area
 local Content = New("Frame", {Size = UDim2.new(1, -150, 1, -40), Position = UDim2.fromOffset(150, 40), BackgroundColor3 = Colors.Surface, Parent = Main}, {
     New("UICorner", {CornerRadius = UDim.new(0, 10)})
 })
 
 local Tabs = {}
+local CurrentTab = nil
+
+-- CORREÇÃO: Função para trocar de aba
+local function SwitchTab(tabName)
+    for name, t in pairs(Tabs) do
+        if name == tabName then
+            t.Btn.BackgroundColor3 = Colors.Surface2
+            t.Btn.TextColor3 = Colors.Accent
+            t.Frame.Visible = true
+        else
+            t.Btn.BackgroundColor3 = Colors.Background
+            t.Btn.TextColor3 = Colors.Muted
+            t.Frame.Visible = false
+        end
+    end
+    CurrentTab = tabName
+end
 
 local function CreateTab(name)
     local Btn = New("TextButton", {Size = UDim2.new(1, 0, 0, 35), BackgroundColor3 = Colors.Background, Text = name, TextColor3 = Colors.Muted, Font = Enum.Font.GothamMedium, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, Parent = Sidebar}, {
@@ -74,14 +87,7 @@ local function CreateTab(name)
     end)
 
     Btn.MouseButton1Click:Connect(function()
-        for _, t in pairs(Tabs) do
-            t.Btn.BackgroundColor3 = Colors.Background
-            t.Btn.TextColor3 = Colors.Muted
-            t.Frame.Visible = false
-        end
-        Btn.BackgroundColor3 = Colors.Surface2
-        Btn.TextColor3 = Colors.Accent
-        Frame.Visible = true
+        SwitchTab(name)
     end)
 
     Tabs[name] = {Btn = Btn, Frame = Frame}
@@ -149,12 +155,12 @@ local TabMisc = CreateTab("MISC")
 local TabLoot = CreateTab("LOOTFINDER")
 local TabServer = CreateTab("SERVER")
 
--- Preenchendo COMBAT (com as setinhas)
+-- Preenchendo COMBAT
 CreateSection(TabCombat, "AIM")
 CreateToggle(TabCombat, "Silent Aim", true, { { Type = "Slider", Title = "Hit Chance" }, { Type = "Slider", Title = "Target Part" } })
 CreateToggle(TabCombat, "Aimbot", false, { { Type = "Slider", Title = "Smoothness" }, { Type = "Slider", Title = "FOV" } })
 
--- Preenchendo MISC (igual BBC Hub)
+-- Preenchendo MISC
 CreateSection(TabMisc, "MISC")
 CreateToggle(TabMisc, "Fast Trade")
 CreateToggle(TabMisc, "Panic Mode")
@@ -179,7 +185,7 @@ task.spawn(function()
     end
 end)
 
--- Abre a primeira aba
+-- CORREÇÃO: Chamando a função diretamente em vez de simular clique
 task.defer(function()
-    if Tabs["COMBAT"] then Tabs["COMBAT"].Btn.MouseButton1Click:Fire() end
+    SwitchTab("COMBAT")
 end)
