@@ -1,8 +1,7 @@
 -- The library lives in its own function so its locals don't count against
 -- the script below it: Luau allows 200 locals per function.
 local Library = (function()
-local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService"local UserInputService = game:GetService("UserInputService")
 local GuiService = game:GetService("GuiService")
 local RunService = game:GetService("RunService")
 local HttpService = game:GetService("HttpService")
